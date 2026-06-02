@@ -77,9 +77,11 @@ jobs:
             const issueBody = process.env.ISSUE_BODY || '';
             const issueNumber = Number(process.env.ISSUE_NUMBER);
 
-            // Disable all checkboxes in the issue body
+            // Disable all checkboxes in the issue body and preserve only the selected option
+            const selectedOption = (process.env.SELECTED_OPTION || '').trim().toLowerCase();
             const updatedBody = issueBody.replace(/- \[([ xX])\] (.+)/g, (match, checked, label) => {
-              const emoji = String(checked).toLowerCase() === 'x' ? '✅' : '⬜️';
+              const normalizedLabel = String(label || '').trim().toLowerCase();
+              const emoji = normalizedLabel === selectedOption ? '✅' : '⬜️';
               return `${emoji} ${label}`;
             });
 
@@ -104,6 +106,7 @@ jobs:
         env:
           ISSUE_BODY: ${{ github.event.issue.body }}
           ISSUE_NUMBER: ${{ github.event.issue.number }}
+          SELECTED_OPTION: ${{ needs.get_selected_option.outputs.checked-item-value }}
 
   # Trigger the appropriate workflow based on the selected option
   mona:

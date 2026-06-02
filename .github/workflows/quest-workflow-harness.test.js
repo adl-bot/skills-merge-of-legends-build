@@ -302,6 +302,16 @@ assert.ok(
   "PR workflow harness must run the workflow harness test"
 );
 
+const pickWorkflow = readRepoFile(".github/workflows/0-1-pick.yml");
+assert.ok(
+  pickWorkflow.includes("SELECTED_OPTION: ${{ needs.get_selected_option.outputs.checked-item-value }}"),
+  "0-1-pick.yml must pass the selected option to checkbox disabling"
+);
+assert.ok(
+  pickWorkflow.includes("const emoji = normalizedLabel === selectedOption ? '✅' : '⬜️';"),
+  "0-1-pick.yml must keep only the selected option checked when disabling checkboxes"
+);
+
 // 0-bootstrap-readme.yml contract: renders start-game template and
 // publishes README.md only on initial template clone (push event on a
 // non-template repository). Lives in its own workflow file (not as a
