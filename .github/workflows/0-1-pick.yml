@@ -44,6 +44,23 @@ jobs:
               }
             }
 
+            if (!checked_item_value) {
+              // Fallback for a previously locked issue body where checkboxes
+              // have already been converted to emoji markers.
+              const emojiSelections = [
+                ...issueBody.matchAll(/^[ \t]*✅\s+(ducky - beginner|mona - intermediate|copilot - advanced)\s*$/gim),
+              ];
+
+              if (emojiSelections.length === 1) {
+                checked_item_value = emojiSelections[0][1].trim();
+                console.log(`Selected value from emoji marker: ${checked_item_value}`);
+              } else if (emojiSelections.length > 1) {
+                core.info('Multiple emoji selections detected; no workflow will be started.');
+                core.setOutput('checked-item-value', '');
+                return;
+              }
+            }
+
             // If no checked item found, nothing to do
             if (!checked_item_value) {
               core.info('No checkboxes selected.');

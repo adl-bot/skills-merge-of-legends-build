@@ -181,6 +181,16 @@ assertInOrder(
   ".github/workflows/0-0-start.yml closed-issue comment flow"
 );
 
+const pickWorkflow = readRepoFile(".github/workflows/0-1-pick.yml");
+assert.ok(
+  pickWorkflow.includes("Selected value from emoji marker"),
+  "0-1-pick.yml must support locked emoji selections in edited issue bodies"
+);
+assert.ok(
+  pickWorkflow.includes("ducky - beginner|mona - intermediate|copilot - advanced"),
+  "0-1-pick.yml must validate emoji selection labels against known challenge options"
+);
+
 assertWorkflowUsesRenderer(".github/workflows/1-1-mona-start.yml", [
   {
     buildStepId: "build-challenge-intro",
